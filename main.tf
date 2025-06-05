@@ -37,7 +37,6 @@ resource "docker_container" "traefik" {
   }
 
   command = [
-    "--log.level=DEBUG",
     "--api.insecure=true",
     "--providers.docker=true",
     "--providers.docker.exposedbydefault=false",
@@ -45,7 +44,6 @@ resource "docker_container" "traefik" {
     "--entryPoints.websecure.address=:443",
     "--certificatesresolvers.myresolver.acme.httpchallenge=true",
     "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web",
-    "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory",
     "--certificatesresolvers.myresolver.acme.email=bentomachado@gmail.com",
     "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
   ]
