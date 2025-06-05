@@ -11,7 +11,6 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
 
-# Imagem do Traefik (versão 2.x)
 resource "docker_image" "traefik" {
   name = "traefik:v3.4.1"
 }
