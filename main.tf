@@ -13,8 +13,6 @@ resource "docker_container" "traefik" {
     aliases = ["traefik"]
   }
 
-  restart = "unless-stopped"
-
   ports {
     internal = 80
     external = 80
@@ -29,18 +27,30 @@ resource "docker_container" "traefik" {
   }
 
   volumes {
-    host_path      = "${abspath(path.module)}/traefik.yml"
-    container_path = "/etc/traefik/traefik.yml"
+    host_path      = "/var/run/docker.sock"
+    container_path = "/var/run/docker.sock"
     read_only      = true
   }
   volumes {
-    host_path      = "/var/run/docker.sock"
-    container_path = "/var/run/docker.sock"
+    host_path      = "${abspath(path.module)}/letsencrypt"
+    container_path = "/letsencrypt"
   }
-  volumes {
-    host_path      = "${abspath(path.module)}/acme"
-    container_path = "/acme"
-  }
+
+  command = [
+    "--log.level=DEBUG",
+    "--api.insecure=true",
+    "--providers.docker=true",
+    "--providers.docker.exposedbydefault=false",
+    "--entryPoints.web.address=:80",
+    "--entryPoints.websecure.address=:443",
+    "--certificatesresolvers.myresolver.acme.httpchallenge=true",
+    "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web",
+    "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory",
+    "--certificatesresolvers.myresolver.acme.email=bentomachado@gmail.com",
+    "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+  ]
+
+  restart = "unless-stopped"
 }
 
 resource "docker_container" "whoami" {
@@ -58,22 +68,14 @@ resource "docker_container" "whoami" {
     label = "traefik.enable"
     value = "true"
   }
-
   labels {
     label = "traefik.http.routers.whoami.rule"
-    value = "Host(`whoami.bentomachado.dev`) || Host(`whoami.localhost`)"
+    value = "Host(`whoami.bentomachado.dev`)"
   }
-
   labels {
     label = "traefik.http.routers.whoami.entrypoints"
     value = "websecure"
   }
-
-  labels {
-    label = "traefik.http.routers.whoami.tls"
-    value = "true"
-  }
-
   labels {
     label = "traefik.http.routers.whoami.tls.certresolver"
     value = "myresolver"
