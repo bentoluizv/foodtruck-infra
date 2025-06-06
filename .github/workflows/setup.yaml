@@ -26,7 +26,7 @@ jobs:
           username: root
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
-          source: "clone_repo.py,install_docker.py,install_terraform.py,setup_terraform_user.py"
+          source: "scripts/clone_repo.py,scripts/install_docker.py,scripts/install_terraform.py,scripts/setup_terraform_user.py"
           target: /infra/
 
       - name: Run scripts
