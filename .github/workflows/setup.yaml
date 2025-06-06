@@ -20,7 +20,7 @@ jobs:
             scripts/setup_terraform_user.py
 
       - name: Copy scripts to server
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action
         with:
           host: ${{ vars.HOST }}
           username: root
