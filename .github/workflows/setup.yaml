@@ -27,7 +27,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           source: "scripts/clone_repo.py,scripts/install_docker.py,scripts/install_terraform.py,scripts/setup_terraform_user.py"
-          target: /infra/
+          target: /root/infra/
 
       - name: Run scripts
         uses: appleboy/ssh-action@master
@@ -37,12 +37,12 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           script: |
-            chmod +x /infra/install_docker.py
-            chmod +x /infra/install_terraform.py
-            chmod +x /infra/setup_terraform_user.py
-            chmod +x /infra/clone_repo.py
-            python3 /infra/install_docker.py
-            python3 /infra/install_terraform.py
-            python3 /infra/setup_terraform_user.py
-            python3 /infra/clone_repo.py
-            rm -rf /infra/
+            chmod +x /root/infra/install_docker.py
+            chmod +x /root/infra/install_terraform.py
+            chmod +x /root/infra/setup_terraform_user.py
+            chmod +x /root/infra/clone_repo.py
+            python3 /root/infra/install_docker.py
+            python3 /root/infra/install_terraform.py
+            python3 /root/infra/setup_terraform_user.py
+            python3 /root/infra/clone_repo.py
+            rm -rf /root/infra/
