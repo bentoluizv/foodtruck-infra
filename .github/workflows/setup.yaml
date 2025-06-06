@@ -3,6 +3,9 @@ name: Terraform User Setup
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -11,32 +14,35 @@ jobs:
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            scripts/
+            scripts/clone_repo.py
+            scripts/install_docker.py
+            scripts/install_terraform.py
+            scripts/setup_terraform_user.py
 
       - name: Copy scripts to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ vars.HOST }}
           username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           port: 22
-          source: scripts/
-          target: /root/scripts/
+          source: clone_repo.py,install_docker.py,install_terraform.py,setup_terraform_user.py
+          target: /infra/
 
-      - name: Run config.py remotely
+      - name: Run scripts
         uses: appleboy/ssh-action@master
         with:
           host: ${{ vars.HOST }}
           username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           script: |
-            chmod +x /root/scripts/install_docker.py
-            chmod +x /root/scripts/install_terraform.py
-            chmod +x /root/scripts/setup_terraform_user.py
-            chmod +x /root/scripts/clone_repo.py
-            python3 /root/scripts/install_docker.py
-            python3 /root/scripts/install_terraform.py
-            python3 /root/scripts/setup_terraform_user.py
-            python3 /root/scripts/clone_repo.py
-            rm -rf /root/scripts
+            chmod +x /infra/install_docker.py
+            chmod +x /infra/install_terraform.py
+            chmod +x /infra/setup_terraform_user.py
+            chmod +x /infra/clone_repo.py
+            python3 /infra/install_docker.py
+            python3 /infra/install_terraform.py
+            python3 /infra/setup_terraform_user.py
+            python3 /infra/clone_repo.py
+            rm -rf /infra/
