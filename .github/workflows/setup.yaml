@@ -45,4 +45,3 @@ jobs:
             bash /root/infra/install_terraform.sh
             bash /root/infra/setup_terraform_user.sh
             bash /root/infra/clone_repo.sh
-            rm -rf /root/infra/
