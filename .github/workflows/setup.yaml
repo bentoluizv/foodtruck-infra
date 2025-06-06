@@ -14,10 +14,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            scripts/clone_repo.py
-            scripts/install_docker.py
-            scripts/install_terraform.py
-            scripts/setup_terraform_user.py
+            scripts/install_docker.sh
+            scripts/install_terraform.sh
+            scripts/setup_terraform_user.sh
+            scripts/clone_repo.sh
 
       - name: Copy scripts to server
         uses: appleboy/scp-action@v0.1.7
@@ -26,7 +26,7 @@ jobs:
           username: root
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
-          source: "scripts/clone_repo.py,scripts/install_docker.py,scripts/install_terraform.py,scripts/setup_terraform_user.py"
+          source: "scripts/install_docker.sh,scripts/install_terraform.sh,scripts/setup_terraform_user.sh,scripts/clone_repo.sh"
           target: /root/infra/
 
       - name: Run scripts
@@ -37,12 +37,12 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           script: |
-            chmod +x /root/infra/install_docker.py
-            chmod +x /root/infra/install_terraform.py
-            chmod +x /root/infra/setup_terraform_user.py
-            chmod +x /root/infra/clone_repo.py
-            python3 /root/infra/install_docker.py
-            python3 /root/infra/install_terraform.py
-            python3 /root/infra/setup_terraform_user.py
-            python3 /root/infra/clone_repo.py
+            chmod +x /root/infra/install_docker.sh
+            chmod +x /root/infra/install_terraform.sh
+            chmod +x /root/infra/setup_terraform_user.sh
+            chmod +x /root/infra/clone_repo.sh
+            bash /root/infra/install_docker.sh
+            bash /root/infra/install_terraform.sh
+            bash /root/infra/setup_terraform_user.sh
+            bash /root/infra/clone_repo.sh
             rm -rf /root/infra/
